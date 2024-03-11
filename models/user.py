@@ -1,4 +1,4 @@
-from init import db, Marshmallow
+from init import db, ma
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -9,7 +9,7 @@ class User(db.Model):
     password = db.Column(db.String, nullable=False)
     is_admin = db.Column(db.Boolean, default=False)    
 
-class UserSchema(ma.schema):
+class UserSchema(ma.Schema):
     class Meta:
         model = User
         fields = ('id', 'username', 'email', 'password','is_admin')

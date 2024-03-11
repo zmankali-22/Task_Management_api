@@ -30,8 +30,8 @@ def create_app():
     # def validation_error(error):
     #     return {'error': error.messages}, 400
 
-    # from controllers.cli_controller import db_commands
-    # app.register_blueprint(db_commands)
+    from controllers.cli_controller import db_commands
+    app.register_blueprint(db_commands)
 
     # from controllers.auth_controller import auth_bp
     # app.register_blueprint(auth_bp)
