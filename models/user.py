@@ -1,4 +1,5 @@
 from init import db, ma
+from marshmallow import fields
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -7,12 +8,16 @@ class User(db.Model):
     username = db.Column(db.String)
     email = db.Column(db.String, unique=True, nullable=False)
     password = db.Column(db.String, nullable=False)
-    is_admin = db.Column(db.Boolean, default=False)    
+    is_admin = db.Column(db.Boolean, default=False) 
+
+    projects = db.relationship('Project', back_populates='user', cascade = 'all, delete')   
 
 class UserSchema(ma.Schema):
+
+    projects = fields.List(fields.Nested('ProjectSchema', exclude = ['user']))
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'password','is_admin')
+        fields = ('id', 'username', 'email', 'password','is_admin', 'projects')
 
 
 user_schema = UserSchema(exclude=['password'])
