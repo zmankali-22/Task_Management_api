@@ -1,6 +1,8 @@
 from flask import Blueprint
 from init import db,bcrypt
 from models.user import User
+from models.project import Project
+from datetime import date
 
 
 db_commands = Blueprint('db', __name__)
@@ -33,6 +35,30 @@ def seed_tables():
     ]
 
     db.session.add_all(users)
+
+    projects = [
+        Project(
+            project_name="Project1",
+            description="This is the first project",
+            date = date.today(),
+            user = users[0]
+        ),
+        Project(
+            project_name="Project2",
+            description="This is the second project",
+            date = date.today(),
+            user = users[0]
+        ),
+        Project(
+            project_name="Project3",
+            description="This is the third project",
+            date = date.today(),
+            user = users[1]
+        )
+
+    ]
+
+    db.session.add_all(projects)
     db.session.commit()
     print("Tables seeded")
 
