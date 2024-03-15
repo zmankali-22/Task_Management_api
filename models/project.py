@@ -12,11 +12,13 @@ class Project(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
     user = db.relationship('User', back_populates='projects') 
+    tasks = db.relationship('Task', back_populates='project', cascade='all, delete')
 
 
 
 class ProjectSchema(ma.Schema):
     user = fields.Nested('UserSchema', only = ['username', 'email'])
+    tasks = fields.List(fields.Nested('TaskSchema'))
     class Meta:
         fields = ('id', 'project_name', 'description','date', 'user')
         ordered = True
