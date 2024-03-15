@@ -15,9 +15,10 @@ class Project(db.Model):
 
 
 
-    class ProjectSchema(ma.Schema):
-        user = fields.Nested('UserSchema', only = ['name', 'email'])
-        class Meta:
-            fields = ('id', 'project_name', 'description','date', 'user')
-    project_schema = ProjectSchema()
-    projects_schema = ProjectSchema(many=True)
+class ProjectSchema(ma.Schema):
+    user = fields.Nested('UserSchema', only = ['username', 'email'])
+    class Meta:
+        fields = ('id', 'project_name', 'description','date', 'user')
+        ordered = True
+project_schema = ProjectSchema()
+projects_schema = ProjectSchema(many=True)

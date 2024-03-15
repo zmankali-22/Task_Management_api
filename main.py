@@ -36,6 +36,9 @@ def create_app():
     from controllers.auth_controller import auth_bp
     app.register_blueprint(auth_bp)
 
+    from controllers.project_controller import projects_bp
+    app.register_blueprint(projects_bp)
+
     # from controllers.card_controller import cards_bp
     # app.register_blueprint(cards_bp)
 
