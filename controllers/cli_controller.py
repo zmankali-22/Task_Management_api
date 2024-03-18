@@ -3,6 +3,8 @@ from init import db,bcrypt
 from models.user import User
 from models.project import Project
 from models.task import Task
+from models.comment import Comment
+
 from datetime import date
 
 
@@ -104,6 +106,43 @@ def seed_tables():
     ]
 
     db.session.add_all(tasks)
+
+    comments = [
+
+        Comment(
+            message="This is the first comment",
+            user = users[0],
+            project = projects[0],
+            task = tasks[0]
+        ),
+        Comment(
+            message="This is the second comment",
+            user = users[0],
+            project = projects[1],
+            task = tasks[1]
+        ),
+        Comment(
+            message="This is the third comment",
+            user = users[1],
+            project = projects[2],
+            task = tasks[2]
+        ),
+        Comment(
+            message="This is the fourth comment",
+            user = users[1],
+            project = projects[2],
+            task = tasks[3],
+        ),
+        Comment(
+            message="This is the fifth comment",
+            user = users[1],
+            project = projects[2],
+            task = tasks[3],
+        )
+
+    ]
+
+    db.session.add_all(comments)
     db.session.commit()
     print("Tables seeded")
 

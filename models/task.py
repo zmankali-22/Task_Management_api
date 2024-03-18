@@ -16,13 +16,16 @@ class Task(db.Model):
 
     user = db.relationship('User', back_populates='tasks')
     project = db.relationship('Project', back_populates='tasks')
+    comments = db.relationship('Comment', back_populates='task')
 
 class TaskSchema(ma.Schema):
     user = fields.Nested('UserSchema', only=['username', 'email'])
     project = fields.Nested('ProjectSchema', only=['id','project_name', 'description'])
-
+    comments = fields.Nested('CommentSchema', many=True, only=['id', 'message'])
     class Meta:
         fields = ('id', 'task_name', 'description', 'status', 'priority', 'date', 'project', 'user')
+        
+
         ordered = True
 
 task_schema = TaskSchema()

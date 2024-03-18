@@ -12,10 +12,12 @@ class User(db.Model):
 
     projects = db.relationship('Project', back_populates='user', cascade = 'all, delete')   
     tasks = db.relationship('Task', back_populates='user')
+    comments = db.relationship('Comment', back_populates='user')
 
 class UserSchema(ma.Schema):
     tasks =fields.List( fields.Nested('TaskSchema', exclude=['user']))
     projects = fields.List(fields.Nested('ProjectSchema', exclude = ['user']))
+    comments = fields.List(fields.Nested('CommentSchema', exclude=['user']))
     class Meta:
        
         fields = ('id', 'username', 'email', 'password','is_admin', 'projects', 'tasks')

@@ -14,6 +14,7 @@ class Project(db.Model):
 
     user = db.relationship('User', back_populates='projects') 
     tasks = db.relationship('Task', back_populates='project')
+    comments = db.relationship('Comment', back_populates='project')
    
 
 
@@ -21,6 +22,7 @@ class Project(db.Model):
 class ProjectSchema(ma.Schema):
     user = fields.Nested('UserSchema', only = ['username', 'email'])
     tasks = fields.Nested('TaskSchema',many =True,only = ['id','task_name', 'description'], exclude=['project', 'user'])
+    comments = fields.Nested('CommentSchema', many=True, only=['id', 'message'], exclude=['project', 'user','task']) 
    
     class Meta:
         fields = ('id', 'project_name', 'description','date', 'user','tasks')
