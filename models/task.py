@@ -1,5 +1,5 @@
-from init import db, ma 
 
+from init import db, ma
 from marshmallow import fields
 
 class Task(db.Model):
@@ -12,17 +12,18 @@ class Task(db.Model):
     priority = db.Column(db.String)
     date = db.Column(db.Date)
     project_id = db.Column(db.Integer, db.ForeignKey('projects.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
+    user = db.relationship('User', back_populates='tasks')
     project = db.relationship('Project', back_populates='tasks')
 
 class TaskSchema(ma.Schema):
-
-    project = fields.Nested('ProjectSchema', only = ['project_name', 'description'])
+    user = fields.Nested('UserSchema', only=['username', 'email'])
+    project = fields.Nested('ProjectSchema', only=['id','project_name', 'description'])
 
     class Meta:
-        fields = ('id', 'task_name', 'description','status', 'priority', 'date', 'project')
+        fields = ('id', 'task_name', 'description', 'status', 'priority', 'date', 'project', 'user')
         ordered = True
-
 
 task_schema = TaskSchema()
 tasks_schema = TaskSchema(many=True)

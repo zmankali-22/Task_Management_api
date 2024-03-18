@@ -43,6 +43,8 @@ def create_app():
     app.register_blueprint(tasks_bp)
 
     # from controllers.card_controller import cards_bp
+
+
     # app.register_blueprint(cards_bp)
 
     return app

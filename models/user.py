@@ -11,13 +11,14 @@ class User(db.Model):
     is_admin = db.Column(db.Boolean, default=False) 
 
     projects = db.relationship('Project', back_populates='user', cascade = 'all, delete')   
+    tasks = db.relationship('Task', back_populates='user')
 
 class UserSchema(ma.Schema):
-
+    tasks =fields.List( fields.Nested('TaskSchema', exclude=['user']))
     projects = fields.List(fields.Nested('ProjectSchema', exclude = ['user']))
     class Meta:
-        model = User
-        fields = ('id', 'username', 'email', 'password','is_admin', 'projects')
+       
+        fields = ('id', 'username', 'email', 'password','is_admin', 'projects', 'tasks')
 
 
 user_schema = UserSchema(exclude=['password'])

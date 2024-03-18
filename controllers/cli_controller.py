@@ -70,7 +70,8 @@ def seed_tables():
             status="In Progress",
             priority="High",
             date = date.today(),
-            project = projects[0]
+            project = projects[0],
+            user = users[0]
 
         ),
         Task(
@@ -79,7 +80,8 @@ def seed_tables():
             status="In Progress",
             priority="High",
             date = date.today(),
-            project = projects[1]
+            project = projects[1],
+            user = users[0]
         ),
         Task(
             task_name="Task3",
@@ -87,7 +89,8 @@ def seed_tables():
             status="In Progress",
             priority="High",
             date = date.today(),
-            project = projects[2]
+            project = projects[2],
+            user = users[1]
         ),
         Task(
             task_name="Task4",
@@ -95,7 +98,8 @@ def seed_tables():
             status="In Progress",
             priority="High",
             date = date.today(),
-            project = projects[2]
+            project = projects[2],
+            user = users[1]
         )
     ]
 
