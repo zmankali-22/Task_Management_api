@@ -1,18 +1,32 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from datetime import date
-from sqlalchemy.orm import selectinload
+
+import functools
 
 from init import db
 from models.project import Project, projects_schema, project_schema
-from models.comment import Comment, comment_schema
-from models.task import Task
 from models.user import User
 from controllers.task_controller import tasks_bp
 
 
+
+
 projects_bp = Blueprint('projects', __name__, url_prefix='/projects')
 projects_bp.register_blueprint(tasks_bp)
+
+def authorise_as_admin(fn):
+    @functools.wraps(fn)
+    def wrapper(*args, **kwargs):
+        user_id = get_jwt_identity()
+        stmt = db.select(User).filter_by(id=user_id)
+        user = db.session.scalar(stmt)
+        if user.is_admin:
+            return fn(*args, **kwargs)
+        else:
+            return {'error': 'You are not authorized to delete'}, 403
+    return wrapper
+
 
 
 
@@ -52,14 +66,12 @@ def create_project():
     return project_schema.dump(project), 201
 
 @projects_bp.route('/<int:project_id>', methods=['DELETE'])
+
 @jwt_required()
+@authorise_as_admin
 def delete_project(project_id):
 
-    # check user admin status
-
-    is_admin = is_user_admin()
-    if not is_admin:
-        return {'error': 'You are not authorized to delete this project'}, 403
+  
     # get project from database from id = project_id
     stmt = db.select(Project).filter_by(id=project_id)
     project = db.session.scalar(stmt)
@@ -95,11 +107,9 @@ def update_project(project_id):
         return {'error': f'Project {project_id} not found'}, 404
     
 
-def is_user_admin():
-    user_id = get_jwt_identity()
-    stmt = db.select(User).filter_by(id=user_id)
-    user = db.session.scalar(stmt)
-    return  user.is_admin
+
+
+
 
 
 
