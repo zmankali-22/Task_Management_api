@@ -11,8 +11,8 @@ class User(db.Model):
     is_admin = db.Column(db.Boolean, default=False) 
 
     projects = db.relationship('Project', back_populates='user', cascade = 'all, delete')   
-    tasks = db.relationship('Task', back_populates='user')
-    comments = db.relationship('Comment', back_populates='user')
+    tasks = db.relationship('Task', back_populates='user', cascade = 'all, delete')
+    comments = db.relationship('Comment', back_populates='user', cascade = 'all, delete')
 
 class UserSchema(ma.Schema):
     tasks =fields.List( fields.Nested('TaskSchema', exclude=['user']))
@@ -20,7 +20,7 @@ class UserSchema(ma.Schema):
     comments = fields.List(fields.Nested('CommentSchema', exclude=['user']))
     class Meta:
        
-        fields = ('id', 'username', 'email', 'password','is_admin', 'projects', 'tasks')
+        fields = ('id', 'username', 'email', 'password','is_admin', 'projects', 'tasks', 'comments')
 
 
 user_schema = UserSchema(exclude=['password'])

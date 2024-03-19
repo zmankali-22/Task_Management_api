@@ -112,31 +112,26 @@ def seed_tables():
         Comment(
             message="This is the first comment",
             user = users[0],
-            project = projects[0],
             task = tasks[0]
         ),
         Comment(
             message="This is the second comment",
             user = users[0],
-            project = projects[1],
             task = tasks[1]
         ),
         Comment(
             message="This is the third comment",
             user = users[1],
-            project = projects[2],
             task = tasks[2]
         ),
         Comment(
             message="This is the fourth comment",
             user = users[1],
-            project = projects[2],
             task = tasks[3],
         ),
         Comment(
             message="This is the fifth comment",
             user = users[1],
-            project = projects[2],
             task = tasks[3],
         )
 

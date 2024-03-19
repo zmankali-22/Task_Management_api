@@ -27,3 +27,6 @@ def create_comment(project_id):
         return task_schema.dump(task), 201
     else:
         return {'error': f"project with {project_id} not found"}, 404
+    
+# delete a comment
+    
