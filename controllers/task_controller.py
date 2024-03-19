@@ -18,9 +18,12 @@ tasks_bp.register_blueprint(comments_bp)
 #get all tasks for a project
 @tasks_bp.route('/')
 def get_tasks(project_id):
-    stmt = db.select(Task).filter_by(project_id=project_id)
-    tasks = db.session.scalars(stmt).all()  # Fetch all results
-    return jsonify(tasks_schema.dump(tasks)), 200
+    project = Project.query.get(project_id)
+    if not project:
+        return ({'error': f'Project with id {project_id} not found'}), 404
+    
+    tasks = Task.query.filter_by(project_id=project_id).all()
+    return (tasks_schema.dump(tasks)), 200
 
 @tasks_bp.route('/', methods=['POST'])
 @jwt_required()
