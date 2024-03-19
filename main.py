@@ -18,13 +18,13 @@ def create_app():
     bcrypt.init_app(app)
     jwt.init_app(app)
 
-    # @app.errorhandler(400)
-    # def bad_request(error):
-    #     return {'error': str(error)}, 400
+    @app.errorhandler(400)
+    def bad_request(error):
+        return {'error': str(error)}, 400
     
-    # @app.errorhandler(404)
-    # def not_found(error):
-    #     return {'error': str(error)}, 404
+    @app.errorhandler(404)
+    def not_found(error):
+        return {'error': str(error)}, 404
 
     @app.errorhandler(ValidationError)
     def validation_error(error):
@@ -42,9 +42,5 @@ def create_app():
     from controllers.task_controller import tasks_bp
     app.register_blueprint(tasks_bp)
 
-    # from controllers.card_controller import cards_bp
-
-
-    # app.register_blueprint(cards_bp)
 
     return app
