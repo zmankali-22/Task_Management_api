@@ -1,5 +1,7 @@
-from init import db, ma
 from marshmallow import fields
+from marshmallow.validate import Length, And, Regexp
+
+from init import db, ma
 
 class Project(db.Model):
     __tablename__ = 'projects'
@@ -19,6 +21,12 @@ class Project(db.Model):
 
 
 class ProjectSchema(ma.Schema):
+
+    project_name = fields.String(required=True, validate=And(
+        Length(min=2, error="Project name must be at least 2 characters long"),
+        Regexp('^[a-zA-Z0-9 ]+$', error="Project name can only contain alphanumeric characters and spaces")
+    ))
+
     user = fields.Nested('UserSchema', only = ['username', 'email'])
     tasks = fields.Nested('TaskSchema',many =True,only = ['id','task_name', 'description'], exclude=['project', 'user'])
    

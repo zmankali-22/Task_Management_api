@@ -34,7 +34,7 @@ def get_project(project_id):
 @projects_bp.route('/', methods=['POST'])
 @jwt_required()
 def create_project():
-    body_date = request.get_json()
+    body_date = project_schema.load(request.get_json())
     # create new project model instance
 
     project = Project(
@@ -69,7 +69,7 @@ def delete_project(project_id):
 @projects_bp.route('/<int:project_id>', methods=['PUT', 'PATCH'])
 def update_project(project_id):
     # get the data from request body
-    body_data = request.get_json()
+    body_data = project_schema.load(request.get_json(), partial = True)
     # get the project from the db whose fields need to be updated
     stmt = db.select(Project).filter_by(id=project_id)
     project = db.session.scalar(stmt)

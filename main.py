@@ -26,9 +26,9 @@ def create_app():
     # def not_found(error):
     #     return {'error': str(error)}, 404
 
-    # @app.errorhandler(ValidationError)
-    # def validation_error(error):
-    #     return {'error': error.messages}, 400
+    @app.errorhandler(ValidationError)
+    def validation_error(error):
+        return {'error': error.messages}, 400
 
     from controllers.cli_controller import db_commands
     app.register_blueprint(db_commands)

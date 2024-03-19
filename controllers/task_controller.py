@@ -27,7 +27,7 @@ def get_tasks(project_id):
 def create_task(project_id):
 
     # data we get from  the body of the request
-    body_data = request.get_json()
+    body_data = task_schema.load(request.get_json())
     stmt = db.select(Project).filter_by(id=project_id)
     project = db.session.scalar(stmt)
     if project:
@@ -62,7 +62,7 @@ def delete_task(project_id, task_id):
 @tasks_bp.route('/<int:task_id>', methods = ['PUT', 'PATCH'])
 @jwt_required()
 def update_task(project_id, task_id):
-    body_data = request.get_json()
+    body_data = task_schema.load(request.get_json(), partial = True)
     stmt = db.select(Task).filter_by(id=task_id, project_id=project_id)
     task = db.session.scalar(stmt)
     if task:
