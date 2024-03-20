@@ -2,8 +2,7 @@
 
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from datetime import date
-
+from models.project import Project
 from init import db
 from models.task import Task
 from models.comment import Comment, comment_schema
@@ -11,13 +10,16 @@ from models.comment import Comment, comment_schema
 comments_bp = Blueprint('comments', __name__, url_prefix='/<int:task_id>/comments')
 
 
-
-
 # create a new comment    
 
 @comments_bp.route('/', methods=['POST'])
 @jwt_required()
 def create_comment(project_id, task_id):
+    # Check if the project exists
+    project = Project.query.get(project_id)
+    if not project:
+        return {'error': f'Project with id {project_id} not found'}, 404
+
     body_data = request.get_json()
     stmt = db.select(Task).filter_by(id=task_id, project_id=project_id)
     task = db.session.scalar(stmt)
@@ -42,6 +44,13 @@ def create_comment(project_id, task_id):
 @comments_bp.route('/<int:comment_id>', methods=['DELETE'])
 @jwt_required()
 def delete_comment(project_id, task_id, comment_id):
+    current_user_id = get_jwt_identity()
+
+    # Check if the project exists
+    project = Project.query.get(project_id)
+    if not project:
+        return {'error': f'Project with id {project_id} not found'}, 404
+
     # Check if the comment exists and belongs to the provided task
     stmt = db.select(Comment).filter_by(id=comment_id, task_id=task_id)
     comment = db.session.scalar(stmt)
@@ -52,6 +61,10 @@ def delete_comment(project_id, task_id, comment_id):
     if comment.task.project_id != project_id:
         return {'error': f'Comment {comment_id} does not belong to project {project_id}'}, 404
     
+    # Check if the current user is the author of the comment
+    if comment.user_id != current_user_id:
+        return {'error': 'You are not authorized to delete this comment'}, 403
+
     # Delete the comment
     db.session.delete(comment)
     db.session.commit()
@@ -61,6 +74,13 @@ def delete_comment(project_id, task_id, comment_id):
 @comments_bp.route('/<int:comment_id>', methods=['PUT', 'PATCH'])
 @jwt_required()
 def update_comment(project_id, task_id, comment_id):
+    current_user_id = get_jwt_identity()
+
+    # Check if the project exists
+    project = Project.query.get(project_id)
+    if not project:
+        return {'error': f'Project with id {project_id} not found'}, 404
+
     body_data = request.get_json()
     stmt = db.select(Comment).filter_by(id=comment_id, task_id=task_id)
     comment = db.session.scalar(stmt)
@@ -68,9 +88,13 @@ def update_comment(project_id, task_id, comment_id):
         return {'error': f'Comment {comment_id} not found in task {task_id}'}, 404
     
     # Check if the task associated with the comment belongs to the provided project
-    if comment.task.project_id!= project_id:
+    if comment.task.project_id != project_id:
         return {'error': f'Comment {comment_id} does not belong to project {project_id}'}, 404
-    
+
+    # Ensure that the current user is the author of the comment
+    if comment.user_id != current_user_id:
+        return {'error': 'You are not authorized to edit this comment'}, 403
+
     # Update the comment
     comment.message = body_data.get('message') or comment.message
     db.session.commit()

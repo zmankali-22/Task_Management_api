@@ -2,12 +2,11 @@ from flask import Blueprint, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from datetime import date
 
-import functools
 
 from init import db
 from models.project import Project, projects_schema, project_schema
-from models.user import User
 from controllers.task_controller import tasks_bp
+from controllers.authorise_as_admin import authorise_as_admin
 
 
 
@@ -15,17 +14,6 @@ from controllers.task_controller import tasks_bp
 projects_bp = Blueprint('projects', __name__, url_prefix='/projects')
 projects_bp.register_blueprint(tasks_bp)
 
-def authorise_as_admin(fn):
-    @functools.wraps(fn)
-    def wrapper(*args, **kwargs):
-        user_id = get_jwt_identity()
-        stmt = db.select(User).filter_by(id=user_id)
-        user = db.session.scalar(stmt)
-        if user.is_admin:
-            return fn(*args, **kwargs)
-        else:
-            return {'error': 'You are not authorized to delete'}, 403
-    return wrapper
 
 
 
