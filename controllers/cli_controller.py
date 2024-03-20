@@ -25,13 +25,14 @@ def drop_tables():
 def seed_tables():
     users = [
         User(
-            email="admin@example.com",
+            username='admin',
+            email="admin@email.com",
             password=bcrypt.generate_password_hash('123456').decode('utf8'),
             is_admin=True
         ),
         User(
             username='User1',
-            email="user1@example.com",
+            email="user1@email.com",
             password=bcrypt.generate_password_hash('123456').decode('utf8'),
             is_admin=False
         )
