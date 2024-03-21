@@ -44,7 +44,7 @@ def create_comment(project_id, task_id):
 @comments_bp.route('/<int:comment_id>', methods=['DELETE'])
 @jwt_required()
 def delete_comment(project_id, task_id, comment_id):
-    current_user_id = get_jwt_identity()
+    
 
     # Check if the project exists
     project = Project.query.get(project_id)
@@ -61,9 +61,8 @@ def delete_comment(project_id, task_id, comment_id):
     if comment.task.project_id != project_id:
         return {'error': f'Comment {comment_id} does not belong to project {project_id}'}, 404
     
-    # Check if the current user is the author of the comment
-    if comment.user_id != current_user_id:
-        return {'error': 'You are not authorized to delete this comment'}, 403
+   
+    
 
     # Delete the comment
     db.session.delete(comment)
@@ -74,8 +73,7 @@ def delete_comment(project_id, task_id, comment_id):
 @comments_bp.route('/<int:comment_id>', methods=['PUT', 'PATCH'])
 @jwt_required()
 def update_comment(project_id, task_id, comment_id):
-    current_user_id = get_jwt_identity()
-
+  
     # Check if the project exists
     project = Project.query.get(project_id)
     if not project:
@@ -91,9 +89,7 @@ def update_comment(project_id, task_id, comment_id):
     if comment.task.project_id != project_id:
         return {'error': f'Comment {comment_id} does not belong to project {project_id}'}, 404
 
-    # Ensure that the current user is the author of the comment
-    if comment.user_id != current_user_id:
-        return {'error': 'You are not authorized to edit this comment'}, 403
+  
 
     # Update the comment
     comment.message = body_data.get('message') or comment.message
