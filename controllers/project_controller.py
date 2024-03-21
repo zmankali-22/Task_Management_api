@@ -37,12 +37,12 @@ def get_project(project_id):
 @projects_bp.route('/', methods=['POST'])
 @jwt_required()
 def create_project():
-    body_date = project_schema.load(request.get_json())
+    body_data = project_schema.load(request.get_json())
     # create new project model instance
 
     project = Project(
-        project_name = body_date.get('project_name'),
-        description = body_date.get('description'),
+        project_name = body_data.get('project_name'),
+        description = body_data.get('description'),
         date = date.today(),
         user_id = get_jwt_identity()
     )
