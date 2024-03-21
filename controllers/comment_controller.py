@@ -94,7 +94,6 @@ def update_comment(project_id, task_id, comment_id):
     # Update the comment
     comment.message = body_data.get('message') or comment.message
     db.session.commit()
-    return comment_schema.dump(comment), 200
 
 
 
