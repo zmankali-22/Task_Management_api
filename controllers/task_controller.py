@@ -104,6 +104,8 @@ def update_task(project_id, task_id):
     task = db.session.scalar(stmt)
     
     if task:
+        if str(task.user_id) != get_jwt_identity():
+            return {'error': 'You have to be owner to update this project'}, 403
         # Update the task properties based on the request data
         body_data = task_schema.load(request.get_json(), partial=True)
         task.task_name = body_data.get('task_name', task.task_name)
